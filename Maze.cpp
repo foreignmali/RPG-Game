@@ -11,13 +11,13 @@ public:
     bool connected = false;
     // Array of room connections in each direction (N, E, S, W)
     Room* connections[4] = { nullptr, nullptr, nullptr, nullptr };
+    
     // Connect to another room in the specified direction
     void connect(Direction direction, Room* room) {
         connections[direction] = room;
         room->connections[(direction + 2) % 4] = this;  // Connect back in the opposite direction
-        connected = true;
-        room->connected = true;
     }
+    // Count connections
     int connectionCount(){
         int out=4;
         for (auto c:connections){
@@ -66,7 +66,8 @@ class Maze {
     int w;
     int h;
     vector<vector<Room*>> maze;
-
+    random_device rd; 
+    mt19937 eng{rd()};
 public:
     Maze(int width, int height) : w(width), h(height), maze(height, vector<Room*>(width, nullptr)) {
         srand(static_cast<unsigned int>(time(0)));
@@ -77,7 +78,7 @@ public:
             for (int j = 0; j < w; j++) {
                 switch (rand() % 5) {
                     case 0:
-                        maze[i][j] = new Room(); // Empty room //TODO: make it so this work with nullptr instead aka find a way to have it never block off rooms
+                        maze[i][j] = nullptr; // Empty room 
                         break;
                     case 1:
                         maze[i][j] = new BuffRoom(); // Create Buff room
@@ -97,7 +98,17 @@ public:
                 }
             }
         }
-        generateMaze(rand()%w,rand()%h);
+        
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (maze[i][j] != nullptr && !maze[i][j]->isConnected()) {
+                    // Start generating the maze from any unvisited room
+                    // This will split the maze into islands if rooms are isolated by nullptr
+                    // TO-DO: Either make islands accessable by portal or make new connecting rooms at nullptr
+                    generateMaze(j, i);
+                }
+            }
+        }
         generateSpawnAndBoss();
     }
     void generateSpawnAndBoss(){
@@ -106,6 +117,7 @@ public:
         int max = 0;
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
+                if(maze[i][j]==nullptr) continue;
                 int connectionsCount=maze[i][j]->connectionCount();
                 if (connectionsCount > max) {
                     max = connectionsCount;
@@ -132,12 +144,6 @@ public:
         for (int i = 0; i < 4; ++i) maze[maxConnections[r2].first][maxConnections[r2].second]->connections[i] = oldRoom->connections[i];
         delete oldRoom;
     }
-    vector<pair<int, int>> directions = {
-            {1, 0},   // Move E
-            {0, 1},   // Move S
-            {-1, 0},  // Move W
-            {0, -1}   // Move N
-    };
     Direction mapDirection(int dx, int dy) {
         if (dx == 1 && dy == 0) return E;
         if (dx == -1 && dy == 0) return W;
@@ -145,15 +151,19 @@ public:
         if (dx == 0 && dy == -1) return N;
         throw invalid_argument("Invalid direction");
     }
-    random_device rd; 
-    mt19937 eng{rd()}; 
     bool isInBounds(int x, int y) {
         return x >= 0 && x < w && y >= 0 && y < h;
     }
     //following backtracking algorithm described here: https://weblog.jamisbuck.org/2010/12/27/maze-generation-recursive-backtracking
     void generateMaze(int x,int y){
-        if (maze[y][x] == nullptr) return;
-        //cout<<x<<" "<<y<<endl<<toString(); // print it step by step
+        cout<<x<<" "<<y<<endl<<toString(); // print it step by step
+            vector<pair<int, int>> directions = {
+            {0, -1}, // Move N
+            {1, 0},  // Move E
+            {0, 1},  // Move S
+            {-1, 0}  // Move W
+        };
+        maze[y][x]->connected=true;
         shuffle(directions.begin(), directions.end(), eng);
         for (auto& dir : directions) {
             int nx = x + dir.first;
@@ -170,12 +180,16 @@ public:
             out+="|";
             for (int x = 0; x < w; ++x) {
                 //cout<<"I here "<<y<<" "<<x<<endl;
-                if (maze[y][x]->type() == "Spawn Room") {
+                if (maze[y][x] == nullptr) {
+                    out +="||";
+                } 
+                else if (maze[y][x]->type() == "Spawn Room") {
                     out += (maze[y][x]->connections[S] != nullptr) ? "!" : "L";
                     out+=((maze[y][x]->connections[E] != nullptr)?" ":"|");
                 } 
                 else if (maze[y][x]->type() == "Boss Room") {
-                    out += "+|";
+                    out += (maze[y][x]->connections[S] != nullptr) ? "-" : "=";
+                    out+=((maze[y][x]->connections[E] != nullptr)?" ":"|");
                 } 
                 else {
                     out += (maze[y][x]->connections[S] != nullptr) ? " " : "_";
@@ -200,9 +214,9 @@ public:
     }
     
 };
-//dummy main for testing
-int main() {
-    Maze maze(5,5);
-    cout<<""<<maze.toString();
-    return 0;
-}
+//dummy main for debug
+// int main() {
+//     Maze maze(5,5);
+//     cout<<""<<maze.toString();
+//     return 0;
+// }
