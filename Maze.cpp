@@ -18,45 +18,66 @@ public:
         connected = true;
         room->connected = true;
     }
+    int connectionCount(){
+        int out=4;
+        for (auto c:connections){
+            if (c==nullptr) out--;
+        }
+        return out;
+    }
     bool isConnected() {
         return connected;
     }
+    virtual string type() {
+        return "Empty Room";
+    }
 };
 class SpawnRoom:public Room{
-    
+    string type() override{
+        return "Spawn Room";
+    }
 };
 class BuffRoom:public Room{
-    
+    string type() override{
+        return "Buff Room";
+    }
 };
 class DebuffRoom:public Room{
-    
+    string type() override{
+        return "Debuff Room";
+    }
 };
 class EnemyRoom:public Room{
-    
+    string type() override{
+        return "Enemy Room";
+    }
 };
 class ItemRoom:public Room{
-    
+    string type() override{
+        return "Item Room";
+    }
 };
 class BossRoom:public Room{
-    
+    string type() override{
+        return "Boss Room";
+    }
 };
 class Maze {
-    const int w = 5;
-    const int h = 5;
-
+    int w;
+    int h;
     vector<vector<Room*>> maze;
 
 public:
-    Maze() : maze(h, vector<Room*>(w, nullptr)) {
+    Maze(int width, int height) : w(width), h(height), maze(height, vector<Room*>(width, nullptr)) {
         srand(static_cast<unsigned int>(time(0)));
+        generateRooms();
     }
-
     void generateRooms() {
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
                 switch (rand() % 5) {
                     case 0:
-                        maze[i][j] = new Room(); // Empty room //TODO: make it so this work with nullptr instead
+                        maze[i][j] = new Room(); // Empty room //TODO: make it so this work with nullptr instead aka find a way to have it never block off rooms
                         break;
                     case 1:
                         maze[i][j] = new BuffRoom(); // Create Buff room
@@ -76,6 +97,40 @@ public:
                 }
             }
         }
+        generateMaze(rand()%w,rand()%h);
+        generateSpawnAndBoss();
+    }
+    void generateSpawnAndBoss(){
+        vector<pair<int,int>> oneConnection;
+        vector<pair<int,int>> maxConnections;
+        int max = 0;
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                int connectionsCount=maze[i][j]->connectionCount();
+                if (connectionsCount > max) {
+                    max = connectionsCount;
+                    maxConnections.clear();
+                    maxConnections.push_back({i,j});
+                }
+                else if (connectionsCount == max) {
+                    maxConnections.push_back({i,j});
+                }
+                if (connectionsCount==1){
+                    oneConnection.push_back({i,j});
+                }
+            }
+        }
+        int r1=rand()%oneConnection.size(),r2=rand()%maxConnections.size();
+        Room* oldRoom = maze[oneConnection[r1].first][oneConnection[r1].second];
+        maze[oneConnection[r1].first][oneConnection[r1].second]= new BossRoom();
+        maze[oneConnection[r1].first][oneConnection[r1].second]->connected = oldRoom->connected;
+        for (int i = 0; i < 4; ++i) maze[oneConnection[r1].first][oneConnection[r1].second]->connections[i] = oldRoom->connections[i];
+        delete oldRoom;
+        oldRoom = maze[maxConnections[r2].first][maxConnections[r2].second];
+        maze[maxConnections[r2].first][maxConnections[r2].second]= new SpawnRoom();
+        maze[maxConnections[r2].first][maxConnections[r2].second]->connected = oldRoom->connected;
+        for (int i = 0; i < 4; ++i) maze[maxConnections[r2].first][maxConnections[r2].second]->connections[i] = oldRoom->connections[i];
+        delete oldRoom;
     }
     vector<pair<int, int>> directions = {
             {1, 0},   // Move E
@@ -115,8 +170,12 @@ public:
             out+="|";
             for (int x = 0; x < w; ++x) {
                 //cout<<"I here "<<y<<" "<<x<<endl;
-                if (maze[y][x] == nullptr) {
-                    out += "||";
+                if (maze[y][x]->type() == "Spawn Room") {
+                    out += (maze[y][x]->connections[S] != nullptr) ? "!" : "L";
+                    out+=((maze[y][x]->connections[E] != nullptr)?" ":"|");
+                } 
+                else if (maze[y][x]->type() == "Boss Room") {
+                    out += "+|";
                 } 
                 else {
                     out += (maze[y][x]->connections[S] != nullptr) ? " " : "_";
@@ -143,9 +202,7 @@ public:
 };
 //dummy main for testing
 int main() {
-    Maze maze;
-    maze.generateRooms();
-    maze.generateMaze(0, 0);
+    Maze maze(5,5);
     cout<<""<<maze.toString();
     return 0;
 }
