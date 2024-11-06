@@ -13,6 +13,9 @@ void Room::makePortal(Room* room){
     connections[P]=room;
     room->connections[P] = this;
 }
+void Room::clearPortal(){
+    connections[P]=nullptr;
+}
 
 int Room::connectionCount() {
     int out = 0;
@@ -178,12 +181,13 @@ vector<Room*> Maze::getMaxConnections(vector<vector<Room*>> group){
 void Maze::generatePortals(vector<vector<Room*>> islands){
     if (islands.size()<2) return;
 
-    for (int i = 0; i < islands.size(); i++){
-        islands[i]=getMinConnections(islands[i]);
-    }
+    for (int i = 0; i < islands.size(); i++) islands[i]=getMinConnections(islands[i]);
+    std::sort(islands.begin(), islands.end(),[](const std::vector<Room*>& a, const std::vector<Room*>& b) {return a.size()<b.size();});
     vector<vector<bool>> connected(islands.size(),vector<bool>(islands.size(),false));
-    for (int i = 0; i < connected.size(); i++){
+    vector<vector<bool>> used(islands.size());
+    for (int i = 0; i < connected.size(); i++) {
         connected[i][i]=true;
+        used[i] = vector<bool>(islands[i].size(), false);
     }
     auto allConnected = [&]() -> bool {
         for (vector<bool> i:connected){
@@ -193,56 +197,69 @@ void Maze::generatePortals(vector<vector<Room*>> islands){
         }
         return true;
     };
-    std::sort(islands.begin(), islands.end(),[](const std::vector<Room*>& a, const std::vector<Room*>& b) {return a.size()<b.size();});
-    // for (int i = 0; i < islands.size(); i++){
-    //     for (int j = 0; j < islands[i].size(); j++){
-    //         cout<<islands[i][j]->coordinates.first<<islands[i][j]->coordinates.second<<endl;
-    //     }
-    //     cout<<endl;
-    // }
-    for (int i = 0; i < islands.size(); i++){
-        // FUCKING HELL this is confusing because there are 2 pairs of coordinates for the same Room*
-        if (islands[i].size()<1||allConnected()) continue;
-        pair<Room*,pair<int,int>> ran,dom; // ran is room in island i; dom is room in island not i
-
-        // cout<<"i"<<endl;
-        int temp=rand()%islands[i].size();
-        ran={islands[i][temp],{i,temp}};
-        do{dom=pickRandomRoom(islands);}while(dom.second.first==i||connected[i][dom.second.first]); // dom cannot have overlapping pair.first which is island number
-        pair<int,int> r=ran.first->coordinates,r1=dom.first->coordinates;
-
-        // Connect rooms by portal
-        // cout<<"am"<<r.first<<r.second<<" "<<r1.first<<r1.second<<endl;
-        maze[r.second][r.first]->makePortal(maze[r1.second][r1.first]);
-
-        // Remove the Room from islands so it won't be picked again
-        // cout<<"here"<<ran.second.first<<ran.second.second<<" "<<dom.second.first<<dom.second.second<<endl;
-        if (islands[ran.second.first].size()<2) islands[ran.second.first].clear();
-        else islands[ran.second.first].erase(islands[ran.second.first].begin()+ran.second.second);
-        if (islands[dom.second.first].size()<2) islands[dom.second.first].clear();
-        else islands[dom.second.first].erase(islands[dom.second.first].begin()+dom.second.second);
-
-        // Label that these islands are connected
-        // cout<<"working"<<ran.second.first<<dom.second.first<<" "<<dom.second.first<<ran.second.first<<endl;
-        for(int k=0;k<connected.size();k++){
-            if(connected[ran.second.first][k]) {
-                connected[dom.second.first][k]=true;
-                connected[k][dom.second.first]=true;
-            }            
+    auto islandFilled = [&](int i) -> bool {
+        for (int j = 0; j < used[i].size(); j++){
+            if (!used[i][j]) return false;
         }
-        cout<<toString()<<islands[r.second].size()<<islands[r1.second].size()<<endl;
-    //     for (int i = 0; i < islands.size(); i++){
-    //     for (int j = 0; j < islands[i].size(); j++){
-    //         cout<<islands[i][j]->coordinates.first<<" "<<islands[i][j]->coordinates.second<<endl;
-    //     }
-    //     cout<<endl;
-    //     }
-    // for (const auto& row : connected) {
-    // for (bool val : row) {
-    //     cout << val << " ";
-    // }
-    // cout << endl;
-    // }        
+        return true;
+    };
+    auto islandFullyConnected = [&](int i) -> bool {
+        for (int j = 0; j < connected[i].size(); j++){
+            if (!connected[i][j]) return false;
+        }
+        return true;
+    };
+    auto OutOfRoomsError = [&](int k) -> bool {
+        for (int i=0;i<used.size();i++){
+            if(i==k) continue;
+            if(!islandFilled(i)) return false;
+        }
+        if (islandFullyConnected(k)) return false;
+        return true;
+    };
+    while (!allConnected()) {
+        bool working = true;
+        for(int i=0;!allConnected();i++){
+            // solved known edge case by implementing resets (OutOfRoomsError): when two single Room islands are connected before connecting to the rest of the islands aka islands run out of space before being fully connected.
+            if (islands[i].empty()) continue;
+            pair<Room*,pair<int,int>> ran,dom; // ran is room in island i; dom is room in island not i
+            if (OutOfRoomsError(i)) {
+                working=false; break;
+            }
+// cout<<"i";
+            int temp;
+            do{temp=rand()%islands[i].size();} while (used[i][temp]);
+            ran={islands[i][temp],{i,temp}};
+            do{dom=pickRandomRoom(islands);}while(connected[i][dom.second.first]||used[dom.second.first][dom.second.second]); // dom cannot have overlapping pair.first which is island number
+// cout<<"am";
+            // Connect rooms by portal
+            maze[ran.first->coordinates.second][ran.first->coordinates.first]->makePortal(maze[dom.first->coordinates.second][dom.first->coordinates.first]);
+// cout<<"here";
+            // Mark Rooms as used so it won't be picked again
+            used[i][temp] = true;
+            used[dom.second.first][dom.second.second] = true;
+// cout<<"working";
+            // Label that these islands are connected
+            for (int k = 0; k < connected.size(); k++) {
+                if (connected[i][k]) {
+                    connected[dom.second.first][k] = true;
+                    connected[k][dom.second.first] = true;
+                }
+            }
+            cout<<toString()<<endl;
+        }
+        if (!working) {
+            for (int i = 0; i < used.size(); i++){
+                for (int j = 0; j < used[i].size(); j++){
+                    if(used[i][j]) maze[islands[i][j]->coordinates.second][islands[i][j]->coordinates.first]->clearPortal();
+                }
+            }
+            for (int i = 0; i < islands.size(); i++) {
+                fill(connected[i].begin(), connected[i].end(), false);
+                connected[i][i] = true;
+                fill(used[i].begin(), used[i].end(), false);
+            }
+        }
     }
 }
 pair<Room*, pair<int, int>> Maze::pickRandomRoom(vector<vector<Room*>> matrix){
