@@ -24,6 +24,8 @@ public:
     void connect(Direction direction, Room* room);
     void makePortal(Room* room);
 
+    void clearPortal();
+
     // Count connections
     int connectionCount();
     
