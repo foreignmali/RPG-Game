@@ -12,22 +12,25 @@
 using namespace std;
 
 // Enum for Directions
-enum Direction { N, E, S, W };
-
+enum Direction { N, E, S, W, P};
 // Base class for different types of rooms
 class Room {
 public:
+    pair<int,int> coordinates;
     bool connected = false; // Indicates if the room is connected
-    Room* connections[4] = { nullptr, nullptr, nullptr, nullptr }; // Connections in each direction (N, E, S, W)
+    Room* connections[5] = { nullptr, nullptr, nullptr, nullptr, nullptr}; // Connections in each direction and a portal(N, E, S, W, P)
 
     // Connect to another room in the specified direction
     void connect(Direction direction, Room* room);
-    
+    void makePortal(Room* room);
+
     // Count connections
     int connectionCount();
     
     bool isConnected();
     
+    Room(int x,int y);
+
     // Function to get the type of the room
     virtual string type();
     
@@ -37,26 +40,32 @@ public:
 
 // Derived classes for specific room types
 class SpawnRoom : public Room {
+    using Room::Room;
     string type() override;
 };
 
 class BuffRoom : public Room {
+    using Room::Room;
     string type() override;
 };
 
 class DebuffRoom : public Room {
+    using Room::Room;
     string type() override;
 };
 
 class EnemyRoom : public Room {
+    using Room::Room;
     string type() override;
 };
 
 class ItemRoom : public Room {
+    using Room::Room;
     string type() override;
 };
 
 class BossRoom : public Room {
+    using Room::Room;
     string type() override;
 };
 
@@ -74,7 +83,15 @@ public:
     
     // Function to generate the rooms in the maze
     void generateRooms();
-    
+    vector<Room *> getMinConnections(vector<Room *> group);
+    vector<Room *> getMinConnections(vector<vector<Room *>> group);
+
+    vector<Room *> getMaxConnections(vector<Room *> group);
+    vector<Room *> getMaxConnections(vector<vector<Room *>> group);
+
+    void generatePortals(vector<vector<Room *>> islands);
+    pair<Room*, pair<int, int>> pickRandomRoom(vector<vector<Room*>> matrix);
+
     // Function to generate spawn and boss rooms
     void generateSpawnAndBoss();
     
@@ -85,7 +102,7 @@ public:
     bool isInBounds(int x, int y);
     
     // Function to generate the maze using backtracking
-    void generateMaze(int x, int y);
+    void generateMaze(vector<Room*> &island, int x, int y);
     
     // Function to convert the maze to a string for display
     string toString();
