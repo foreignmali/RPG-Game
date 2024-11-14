@@ -1,57 +1,34 @@
-#include "Player.h"
+#include "Entity.h"
 
-// Item 
-string Item::type() {
-    return "Item";
-}
+Player::Player(const string& name, Room* location) : Entity(name, location, 100, 1, 50, 10, 5, 5, 150) {}
 
-// Player
-Player::Player(const std::string& name, Room* startingRoom): name(name), currentRoom(startingRoom), health(100), maxHealth(100), experience(0), level(1), isAlive(true) {}
-
-// Movement
 void Player::moveTo(Room* room) {
     if (room) {
-        currentRoom = room;
+        location = room;
         cout << name << " moved to " << room->type() << ".\n";
     } else {
         cout << "Invalid room.\n";
     }
 }
 void Player::moveN(){
-    Player::moveTo(currentRoom->connections[N]);
+    Player::moveTo(location->connections[N]);
 }
 void Player::moveE(){
-    Player::moveTo(currentRoom->connections[E]);
+    Player::moveTo(location->connections[E]);
 }
 void Player::moveS(){
-    Player::moveTo(currentRoom->connections[S]);
+    Player::moveTo(location->connections[S]);
 }
 void Player::moveW(){
-    Player::moveTo(currentRoom->connections[W]);
+    Player::moveTo(location->connections[W]);
+}
+void Player::moveP(){
+    Player::moveTo(location->connections[P]);
 }
 
-
-// Getters
-const string& Player::getName() const { return name; }
-int Player::getHealth() const { return health; }
-int Player::getMaxHealth() const { return maxHealth; }
 int Player::getExperience() const { return experience; }
 int Player::getLevel() const { return level; }
 const vector<Item>& Player::getInventory() const { return inventory; }
-const map<string, bool>& Player::getStatuses() const { return statuses; }
-
-// Setters
-void Player::setHealth(int newHealth) {
-    health = max(0, min(newHealth, maxHealth)); // [0, maxHealth]
-    if (health == 0) {
-        isAlive = false; // Player is dead if health drops to 0
-    }
-}
-
-void Player::subtractHealth(int lostHealth) {
-    setHealth(health - lostHealth);
-}
-
 void Player::addExperience(int exp) {
     experience += exp;
     levelUp();
@@ -64,31 +41,6 @@ void Player::addToInventory(Item item) {
 void Player::removeFromInventory(Item item) {
     inventory.erase(remove(inventory.begin(), inventory.end(), item), inventory.end());
 }
-
-void Player::applyStatus(const string& status) {
-    statuses[status] = true;
-}
-
-void Player::removeStatus(const string& status) {
-    statuses.erase(status);
-}
-
-void Player::printStatus() const {
-    cout << "Player: " << name << "\n";
-    cout << "Health: " << health << "/" << maxHealth << "\n";
-    cout << "Level: " << level << "\n";
-    cout << "Experience: " << experience << "\n";
-    cout << "Inventory: ";
-    for (Item item : inventory) {
-        cout << item.type() << " ";
-    }
-    cout << "\nStatuses: ";
-    for (const auto& status : statuses) {
-        cout << status.first << (status.second ? " (active) " : " (inactive) ");
-    }
-    cout << "\n";
-}
-
 void Player::levelUp() {
     const int expToLevelUp = 100; 
     while (experience >= expToLevelUp) {
@@ -98,4 +50,56 @@ void Player::levelUp() {
         health = maxHealth;
         cout << name << " leveled up to level " << level << "!\n";
     }
+}
+
+void Player::useSkill(int skillIndex) {
+    // Override with specific player skills
+}
+
+// Knight
+Knight::Knight(Room* location) : Player("Knight", location) {
+    health = 150;
+    atk = 10;
+    def = 15;
+    mp = 30;
+}
+
+void Knight::useSkill(int skillIndex) {
+    // Implement Knight skills here
+}
+
+// Mage
+Mage::Mage(Room* location) : Player("Mage", location) {
+    health = 80;
+    atk = 5;
+    def = 5;
+    mp = 100;
+}
+
+void Mage::useSkill(int skillIndex) {
+    // Implement Mage skills here
+}
+
+// Rogue
+Rogue::Rogue(Room* location) : Player("Rogue", location) {
+    health = 100;
+    atk = 12;
+    def = 8;
+    mp = 50;
+}
+
+void Rogue::useSkill(int skillIndex) {
+    // Implement Rogue skills here
+}
+
+// Barbarian
+Barbarian::Barbarian(Room* location) : Player("Barbarian", location) {
+    health = 130;
+    atk = 18;
+    def = 8;
+    mp = 20;
+}
+
+void Barbarian::useSkill(int skillIndex) {
+    // Implement Barbarian skills here
 }

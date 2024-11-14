@@ -1,64 +1,6 @@
 #include "Maze.h"
 
 using namespace std;
-
-// Room 
-Room::Room(int x, int y) : coordinates({x,y}) {}
-
-void Room::connect(Direction direction, Room* room) {
-    connections[direction] = room;
-    room->connections[(direction + 2) % 4 ] = this; // Connect back in the opposite direction
-}
-void Room::makePortal(Room* room){
-    connections[P]=room;
-    room->connections[P] = this;
-}
-void Room::clearPortal(){
-    connections[P]=nullptr;
-}
-
-int Room::connectionCount() {
-    int out = 0;
-    for (auto c : connections) {
-        if (c != nullptr) out++;
-    }
-    return out;
-}
-
-bool Room::isConnected() {
-    return connected;
-}
-
-string Room::type() {
-    return "Empty Room";
-}
-
-// Derived room types 
-string SpawnRoom::type() {
-    return "Spawn Room";
-}
-
-string BuffRoom::type() {
-    return "Buff Room";
-}
-
-string DebuffRoom::type() {
-    return "Debuff Room";
-}
-
-string EnemyRoom::type() {
-    return "Enemy Room";
-}
-
-string ItemRoom::type() {
-    return "Item Room";
-}
-
-string BossRoom::type() {
-    return "Boss Room";
-}
-
-// Maze 
 Maze::Maze(int width, int height) : w(width), h(height), maze(height, vector<Room*>(width, nullptr)), eng(rd()) {
     srand(static_cast<unsigned int>(time(0)));
     vector<vector<int>> group(height, vector<int>(width, 0));
@@ -383,16 +325,5 @@ Maze::~Maze(){
             delete maze[i][j]; // Delete the room objects
         }
     }
-}
-int main(){
-    // Maze test({
-    // {1, 1, 1, 0, 1},
-    // {1, 1, 0, 1, 0},
-    // {1, 1, 1, 0, 1},
-    // {1, 1, 0, 1, 0},
-    // {1, 1, 1, 0, 1}
-    // });
-    Maze test(7,7);
-    cout<<test.toString();
 }
 // TO-DO: Maybe make a hidden buff for after you chnage islands that make your rewards better to make portals sound cooler.

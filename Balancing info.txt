@@ -1,0 +1,351 @@
+player: health, atk, def, hp, mp, cr, cd, basic attack, individual skills which require mp
+1. Knight
+
+    Base Stats:
+        HP: 150
+        Atk: 10
+        Def: 15
+        MP: 30
+        Cr: 5%
+        Cd: 150%
+
+    Basic Attack: "Sword Slash"
+    Deals 100% Atk as physical damage to a single enemy.
+
+    Skills:
+        Level 1:
+            Shield Bash (MP: 10)
+            Deals 120% Atk, stuns the target for 1 turn.
+            Taunt (MP: 10)
+            Forces enemies to target the Knight for 2 turns.
+        Level 3:
+            Iron Wall (MP: 15)
+            Increases Def by 50% for 3 turns.
+        Level 5:
+            Holy Smite (MP: 20)
+            Deals 200% Atk as physical damage, heals Knight for 10% of max HP.
+        Level 7:
+            Guardian's Will (MP: 25)
+            Increases all allies' Def by 25% for 2 turns.
+
+2. Mage
+
+    Base Stats:
+        HP: 80
+        Atk: 5
+        Def: 5
+        MP: 100
+        Cr: 10%
+        Cd: 140%
+
+    Basic Attack: "Magic Bolt"
+    Deals 100% Atk as magic damage to a single enemy.
+
+    Skills:
+        Level 1:
+            Fireball (MP: 15)
+            Deals 150% Atk as magic damage to a single target.
+            Mana Shield (MP: 10)
+            Reduces incoming damage by 30% for 2 turns, costs MP instead of HP.
+        Level 3:
+            Arcane Blast (MP: 20)
+            Deals 100% Atk to all enemies as magic damage.
+        Level 5:
+            Blizzard (MP: 30)
+            Deals 180% Atk to all enemies and slows them, reducing their turn speed for 2 turns.
+        Level 7:
+            Summon Elemental (MP: 40)
+            Summons a fire or ice elemental that attacks enemies and absorbs damage for 3 turns.
+
+3. Rogue
+
+    Base Stats:
+        HP: 100
+        Atk: 12
+        Def: 8
+        MP: 50
+        Cr: 15%
+        Cd: 160%
+
+    Basic Attack: "Dagger Strike"
+    Deals 110% Atk as physical damage to a single enemy.
+
+    Skills:
+        Level 1:
+            Backstab (MP: 10)
+            Deals 200% Atk as physical damage, always a critical hit if the target is stunned or debuffed.
+            Smoke Bomb (MP: 15)
+            Increases dodge rate by 50% for 2 turns.
+        Level 3:
+            Poison Blade (MP: 15)
+            Deals 100% Atk and poisons the enemy, dealing damage over time for 3 turns.
+        Level 5:
+            Shadow Step (MP: 20)
+            Deals 150% Atk and teleports behind the enemy, becoming untargetable for 1 turn.
+        Level 7:
+            Flurry of Blades (MP: 25)
+            Hits all enemies for 120% Atk 3 times, each hit has a chance to critically strike.
+
+4. Barbarian
+
+    Base Stats:
+        HP: 130
+        Atk: 18
+        Def: 8
+        MP: 20
+        Cr: 8%
+        Cd: 180%
+
+    Basic Attack: "Heavy Swing"
+    Deals 110% Atk as physical damage to a single enemy.
+
+    Skills:
+        Level 1:
+            Berserk (MP: 10)
+            Increases Atk by 30% but reduces Def by 10% for 2 turns.
+            War Cry (MP: 10)
+            Increases the Barbarian’s Atk by 20% for 3 turns.
+        Level 3:
+            Whirlwind (MP: 15)
+            Hits all enemies for 130% Atk.
+        Level 5:
+            Earthshaker (MP: 20)
+            Deals 150% Atk to all enemies and has a 50% chance to stun them for 1 turn.
+        Level 7:
+            Unstoppable Rage (MP: 25)
+            Increases Atk by 50% and grants immunity to crowd control effects for 3 turns.
+
+Skill and Stat Progression (Level 1-7):
+
+    Level 1: Base stats as shown above and two skills.
+    Level 3: Unlock third skill, stats increase by 10-15%.
+    Level 5: Unlock fourth skill, another stat boost by 10-15%.
+    Level 7: Unlock ultimate skill, final stat boost by 10-15%.
+
+Enemy: health, atk, def, hp, mp, cr, cd, basic attack, individual skills which require mp
+
+1. Goblin
+
+    Type: Weak Melee Fighter
+
+    Stats:
+        HP: 80
+        Atk: 12
+        Def: 4
+        MP: 0
+        Cr: 5%
+        Cd: 150%
+
+    Basic Attack: "Club Smash"
+    Deals 100% Atk as physical damage to a single target.
+
+    Skills:
+        Dirty Strike
+        Deals 120% Atk and lowers the target's Def by 10% for 2 turns. (Cooldown: 3 turns)
+        Goblin Rush
+        Increases Goblin’s Atk by 15% for 1 turn. (Cooldown: 2 turns)
+
+2. Giant Spider
+
+    Type: Poisonous Creature
+
+    Stats:
+        HP: 120
+        Atk: 10
+        Def: 6
+        MP: 0
+        Cr: 10%
+        Cd: 140%
+
+    Basic Attack: "Venomous Bite"
+    Deals 100% Atk as physical damage to a single target, has a 20% chance to apply Poison for 3 turns (deals 5 damage per turn).
+
+    Skills:
+        Web Trap
+        Reduces the target's speed for 2 turns, preventing them from dodging attacks. (Cooldown: 3 turns)
+        Venom Spray
+        Hits all enemies for 80% Atk, applies Poison for 2 turns. (Cooldown: 4 turns)
+
+3. Skeleton Warrior
+
+    Type: Undead Fighter
+
+    Stats:
+        HP: 90
+        Atk: 15
+        Def: 8
+        MP: 0
+        Cr: 7%
+        Cd: 150%
+
+    Basic Attack: "Bone Slash"
+    Deals 100% Atk as physical damage to a single target.
+
+    Skills:
+        Bone Shield
+        Increases the Skeleton’s Def by 20% for 2 turns. (Cooldown: 4 turns)
+        Revenant Strike
+        Deals 150% Atk to a single target, restores 10 HP to the Skeleton. (Cooldown: 3 turns)
+
+4. Orc Brute
+
+    Type: Strong Melee Fighter
+
+    Stats:
+        HP: 200
+        Atk: 20
+        Def: 10
+        MP: 0
+        Cr: 8%
+        Cd: 160%
+
+    Basic Attack: "Axe Chop"
+    Deals 100% Atk as physical damage to a single target.
+
+    Skills:
+        Berserk Smash
+        Deals 130% Atk as physical damage, with a 50% chance to reduce the target’s Def by 15% for 2 turns. (Cooldown: 4 turns)
+        War Cry
+        Increases Atk by 25% for 2 turns. (Cooldown: 3 turns)
+
+5. Fire Drake
+
+    Type: Small Dragon, Mid-Game Monster
+
+    Stats:
+        HP: 300
+        Atk: 25
+        Def: 12
+        MP: 50
+        Cr: 10%
+        Cd: 160%
+
+    Basic Attack: "Claw Swipe"
+    Deals 100% Atk as physical damage to a single target.
+
+    Skills:
+        Fire Breath
+        Deals 150% Atk as fire damage to all enemies, has a 50% chance to apply Burn for 3 turns. (Cooldown: 4 turns)
+        Scorching Aura
+        Deals 20% of the Fire Drake’s Atk as damage at the end of each enemy's turn for 2 turns. (Cooldown: 4 turns)
+
+6. Dark Sorcerer
+
+    Type: Magic Caster, Boss-Type
+
+    Stats:
+        HP: 250
+        Atk: 18
+        Def: 8
+        MP: 150
+        Cr: 5%
+        Cd: 150%
+
+    Basic Attack: "Shadow Bolt"
+    Deals 120% Atk as magic damage to a single target.
+
+    Skills:
+        Dark Grasp
+        Deals 100% Atk as magic damage, reduces the target's Atk by 20% for 2 turns. (Cooldown: 3 turns)
+        Summon Skeletons
+        Summons 2 Skeleton Warriors to fight alongside the Dark Sorcerer. (Cooldown: 5 turns)
+        Drain Life
+        Deals 150% Atk as magic damage to a single target, heals the Sorcerer for 50% of the damage dealt. (Cooldown: 4 turns)
+
+7. Troll
+
+    Type: Regenerating Beast, Mid-Game Monster
+
+    Stats:
+        HP: 350
+        Atk: 22
+        Def: 15
+        MP: 0
+        Cr: 7%
+        Cd: 160%
+
+    Basic Attack: "Heavy Club"
+    Deals 110% Atk as physical damage to a single target.
+
+    Skills:
+        Regeneration
+        Heals the Troll for 10% of its max HP at the end of every turn for 3 turns. (Cooldown: 6 turns)
+        Crushing Blow
+        Deals 140% Atk as physical damage to a single target, has a 50% chance to stun for 1 turn. (Cooldown: 4 turns)
+        Troll Roar
+        Reduces all enemies’ Def by 15% for 2 turns. (Cooldown: 5 turns)
+
+8. Lich King
+
+    Type: Undead Mage, Late-Game Boss
+
+    Stats:
+        HP: 500
+        Atk: 30
+        Def: 20
+        MP: 200
+        Cr: 10%
+        Cd: 170%
+
+    Basic Attack: "Frost Strike"
+    Deals 120% Atk as magic damage, has a 30% chance to freeze the target for 1 turn.
+
+    Skills:
+        Ice Storm
+        Deals 150% Atk to all enemies as magic damage, has a 50% chance to freeze for 1 turn. (Cooldown: 5 turns)
+        Raise Dead
+        Summons 3 Skeleton Warriors to aid in battle. (Cooldown: 6 turns)
+        Soul Drain
+        Deals 180% Atk as magic damage to a single target and heals the Lich King for 50% of the damage dealt. (Cooldown: 4 turns)
+        Death’s Touch
+        Instantly kills one enemy if their HP is below 20%. (Cooldown: 6 turns)
+
+9. Wyvern
+
+    Type: Flying Creature, Late-Game Monster
+
+    Stats:
+        HP: 400
+        Atk: 35
+        Def: 18
+        MP: 50
+        Cr: 12%
+        Cd: 160%
+
+    Basic Attack: "Tail Swipe"
+    Deals 110% Atk as physical damage to a single target.
+
+    Skills:
+        Wing Flap
+        Deals 120% Atk as physical damage to all enemies, with a 50% chance to knock them back (delaying their turn). (Cooldown: 4 turns)
+        Poisonous Bite
+        Deals 150% Atk and poisons the target, dealing 10 damage per turn for 3 turns. (Cooldown: 3 turns)
+        Dive Bomb
+        Deals 200% Atk to a single target. (Cooldown: 5 turns)
+
+10. Demon Lord
+
+    Type: Final Boss
+
+    Stats:
+        HP: 1000
+        Atk: 45
+        Def: 25
+        MP: 300
+        Cr: 15%
+        Cd: 200%
+
+    Basic Attack: "Hellfire Strike"
+    Deals 120% Atk as fire damage to a single target.
+
+    Skills:
+        Inferno
+        Deals 200% Atk as fire damage to all enemies, burns them for 10 damage per turn for 3 turns. (Cooldown: 5 turns)
+        Dark Pact
+        Sacrifices 20% of HP to deal 250% Atk as magic damage to all enemies. (Cooldown: 6 turns)
+        Summon Demons
+        Summons two lesser demons to assist in battle. (Cooldown: 6 turns)
+        Eternal Torment
+        Reduces all enemies’ Atk and Def by 25% for 3 turns. (Cooldown: 7 turns)
+        Hell's Gate
+        Instantly kills one target if their HP is below 30%. (Cooldown: 6 turns)
