@@ -82,9 +82,9 @@ class Maze {
 public:
     // Constructor
     Maze(int width, int height);
-    
+    Maze(vector<vector<int>> num);
     // Function to generate the rooms in the maze
-    void generateRooms();
+    void generateRooms(vector<vector<int>> group);
     vector<Room *> getMinConnections(vector<Room *> group);
     vector<Room *> getMinConnections(vector<vector<Room *>> group);
 
