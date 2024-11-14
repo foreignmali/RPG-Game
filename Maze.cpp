@@ -61,13 +61,23 @@ string BossRoom::type() {
 // Maze 
 Maze::Maze(int width, int height) : w(width), h(height), maze(height, vector<Room*>(width, nullptr)), eng(rd()) {
     srand(static_cast<unsigned int>(time(0)));
-    generateRooms();
-}
-
-void Maze::generateRooms() {
+    vector<vector<int>> group(height, vector<int>(width, 0));
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
-            switch (rand() % 5) {
+            group[i][j]=rand() % 5;
+        }
+    }
+    generateRooms(group);
+}
+Maze::Maze(vector<vector<int>> group) : w(group.size()), h(group[0].size()), maze(group.size(), vector<Room*>(group[0].size(), nullptr)), eng(rd()) {
+    srand(static_cast<unsigned int>(time(0)));
+    generateRooms(group);
+}
+
+void Maze::generateRooms(vector<vector<int>> group) {
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            switch (group[i][j]) {
                 case 0:
                     maze[i][j] = nullptr; // Empty room 
                     break;
@@ -95,7 +105,6 @@ void Maze::generateRooms() {
             if (maze[i][j] != nullptr && !maze[i][j]->isConnected()) {
                 // Start generating the maze from any unvisited room
                 // This will split the maze into islands if rooms are isolated by nullptr
-                // TO-DO: Either make islands accessable by portal or make new connecting rooms at nullptr
                 vector<Room*> temp;
                 islands.push_back(temp);
                 generateMaze(islands[n++], j, i);
@@ -230,6 +239,7 @@ void Maze::generatePortals(vector<vector<Room*>> islands){
             int temp;
             do{temp=rand()%islands[i].size();} while (used[i][temp]);
             ran={islands[i][temp],{i,temp}};
+            int iterations=0;
             do{dom=pickRandomRoom(islands);}while(connected[i][dom.second.first]||used[dom.second.first][dom.second.second]); // dom cannot have overlapping pair.first which is island number
 // cout<<"am";
             // Connect rooms by portal
@@ -375,6 +385,14 @@ Maze::~Maze(){
     }
 }
 int main(){
-    Maze test(5,5);
+    // Maze test({
+    // {1, 1, 1, 0, 1},
+    // {1, 1, 0, 1, 0},
+    // {1, 1, 1, 0, 1},
+    // {1, 1, 0, 1, 0},
+    // {1, 1, 1, 0, 1}
+    // });
+    Maze test(7,7);
     cout<<test.toString();
 }
+// TO-DO: Maybe make a hidden buff for after you chnage islands that make your rewards better to make portals sound cooler.
